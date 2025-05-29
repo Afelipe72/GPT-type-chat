@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %} 
+{% comment %} id="chat-form" to target it with JavaScript. {% endcomment %}
+<form id="chat-form" method="POST">
+    {% csrf_token %}
+    {{ input_field_form }}
+    <button type="submit">Submit</button>
+</form>
+
+<div id="response-box" style="white-space: pre-line; font-family: monospace; margin-top: 20px;"></div>
+
+<script>
+    document.getElementById("chat-form").addEventListener("submit", function(e) {
+        e.preventDefault(); // Prevent full page reload
+        const formData = new FormData(this);
+        // We gather form data (including CSRF token and input text).
+        // We send a POST request using fetch() to the Django view defined by ajax_response_view
+        // response object
+        fetch("{% url 'ajax_response' %}", {
+            method: "POST",
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            },
+            body: formData
+        })
+        // response.json() → parses response body as JSON
+        .then(response => response.json())
+        .then(data => {
+            const text = data.response;
+            const box = document.getElementById("response-box");
+            box.innerText = "";
+            let i = 0;
+            const typer = setInterval(() => {
+                if (i < text.length) {
+                    box.innerText += text[i++];
+                } else {
+                    clearInterval(typer);
+                }
+            }, 30); // 30ms delay between characters
+        });
+    });
+</script>
+{% endblock %}
