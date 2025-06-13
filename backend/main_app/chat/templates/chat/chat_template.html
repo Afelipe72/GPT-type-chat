@@ -27,17 +27,24 @@
         // response.json() → parses response body as JSON
         .then(response => response.json())
         .then(data => {
+            // model response
             const text = data.response;
             const box = document.getElementById("response-box");
+            // clears response
             box.innerText = "";
             let i = 0;
             const typer = setInterval(() => {
                 if (i < text.length) {
-                    box.innerText += text[i++];
+                // useful for debugging text
+                // console.log(`char_text: [${char_text}] code: ${char_text.charCodeAt(0)}`);
+
+                box.textContent += text[i++];
+
+                    
                 } else {
                     clearInterval(typer);
                 }
-            }, 30); // 30ms delay between characters
+            }, 5); // 5ms delay between characters
         });
     });
 </script>

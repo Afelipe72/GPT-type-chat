@@ -20,6 +20,7 @@ def ajax_response_view(request):
         # form name
         user_input = request.POST.get("input_field", "")
         model_reply = get_model_response(user_input)
+        print(model_reply)
         return JsonResponse({"response": model_reply})
     return JsonResponse({"error": "Invalid request"}, status=400)
 
